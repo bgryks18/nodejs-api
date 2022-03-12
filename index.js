@@ -5,6 +5,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 const products = require("./route/products");
+const con = require("./config");
 
 const port = process.env.PORT || 5000;
 
@@ -14,8 +15,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-app.use("/products", products);
+con.getConnection((err, conn) => {
+	if (err) throw err;
+	console.log("Mysql connected");
 
-app.listen(port, () => {
-	console.log(`server is running at: http://localhost:${port}`);
+	app.use("/products", products);
+
+	app.listen(port, () => {
+		console.log(`server is running at: http://localhost:${port}`);
+	});
 });
